@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.format.DateFormat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -173,6 +174,16 @@ class CrimeDetailFragment : Fragment() {
             }
 
             updatePhoto(crime.photoFileName)
+
+            // Add listener to the thumbnail view
+            crimePhoto.setOnClickListener {
+                // Assuming photoName holds the current photo file name
+                val photoFile = File(requireContext().applicationContext.filesDir, crime.photoFileName)
+                if (photoFile.exists()) {
+                    val dialog = ZoomedPhotoDialogFragment.newInstance(photoFile.path)
+                    dialog.show(parentFragmentManager, "ZoomedPhoto")
+                }
+            }
         }
     }
 
@@ -229,6 +240,7 @@ class CrimeDetailFragment : Fragment() {
 
         if (photoFile?.exists() == true) {
             val photoPath = photoFile.path
+            Log.d("CrimeDetailFragment", "Photo file exists: $photoPath")
             binding.crimePhoto.doOnLayout { measuredView ->
                 val scaledBitmap = getScaledBitmap(photoPath, measuredView.width, measuredView.height)
                 binding.crimePhoto.setImageBitmap(scaledBitmap)
@@ -241,6 +253,7 @@ class CrimeDetailFragment : Fragment() {
                 }
             }
         } else {
+            Log.d("CrimeDetailFragment", "Photo file does not exist")
             binding.crimePhoto.setImageBitmap(null)
             binding.crimePhoto.tag = null
             binding.crimePhoto.setOnClickListener(null)

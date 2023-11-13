@@ -25,7 +25,7 @@ class ZoomedPhotoDialogFragment : DialogFragment() {
         if (photoFile.exists()) {
             // Load the image using your preferred method
             // Example: Use Glide or Picasso libraries to load images efficiently
-            Picasso.get().load(photoPath).into(imageView)
+            Picasso.get().load(photoFile).into(imageView)
         } else {
             Log.d("ZoomedPhotoDialog", "File does not exist")
         }
