@@ -5,6 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.criminalintent.databinding.ListItemCrimeBinding
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 import java.util.UUID
 
 class CrimeHolder(
@@ -12,7 +15,10 @@ class CrimeHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(crime: Crime, onCrimeClicked: (crimeId: UUID) -> Unit) {
         binding.crimeTitle.text = crime.title
-        binding.crimeDate.text = crime.date.toString()
+
+        // Format the date according to the device's locale
+        val dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+        binding.crimeDate.text = dateFormat.format(crime.date)
 
         binding.root.setOnClickListener {
             onCrimeClicked(crime.id)
