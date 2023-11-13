@@ -223,25 +223,27 @@ class CrimeDetailFragment : Fragment() {
     }
 
     private fun updatePhoto(photoFileName: String?) {
-        if (binding.crimePhoto.tag != photoFileName) {
-            val photoFile = photoFileName?.let {
-                File(requireContext().applicationContext.filesDir, it)
-            }
+        val photoFile = photoFileName?.let {
+            File(requireContext().applicationContext.filesDir, it)
+        }
 
-            if (photoFile?.exists() == true) {
-                binding.crimePhoto.doOnLayout { measuredView ->
-                    val scaledBitmap = getScaledBitmap(
-                        photoFile.path,
-                        measuredView.width,
-                        measuredView.height
-                    )
-                    binding.crimePhoto.setImageBitmap(scaledBitmap)
-                    binding.crimePhoto.tag = photoFileName
+        if (photoFile?.exists() == true) {
+            val photoPath = photoFile.path
+            binding.crimePhoto.doOnLayout { measuredView ->
+                val scaledBitmap = getScaledBitmap(photoPath, measuredView.width, measuredView.height)
+                binding.crimePhoto.setImageBitmap(scaledBitmap)
+                binding.crimePhoto.tag = photoFileName
+
+                // Set OnClickListener to open the ZoomedPhotoDialogFragment
+                binding.crimePhoto.setOnClickListener {
+                    val dialog = ZoomedPhotoDialogFragment.newInstance(photoPath)
+                    dialog.show(parentFragmentManager, "ZoomedPhoto")
                 }
-            } else {
-                binding.crimePhoto.setImageBitmap(null)
-                binding.crimePhoto.tag = null
             }
+        } else {
+            binding.crimePhoto.setImageBitmap(null)
+            binding.crimePhoto.tag = null
+            binding.crimePhoto.setOnClickListener(null)
         }
     }
 }
