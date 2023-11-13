@@ -6,7 +6,6 @@ import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,9 @@ import androidx.navigation.fragment.navArgs
 import com.bignerdranch.android.criminalintent.databinding.FragmentCrimeDetailBinding
 import kotlinx.coroutines.launch
 import java.io.File
+import java.text.DateFormat
 import java.util.Date
+import java.util.Locale
 
 private const val DATE_FORMAT = "EEE, MMM, dd"
 
@@ -146,7 +147,10 @@ class CrimeDetailFragment : Fragment() {
             if (crimeTitle.text.toString() != crime.title) {
                 crimeTitle.setText(crime.title)
             }
-            crimeDate.text = crime.date.toString()
+            // Format the date according to the device's locale
+            val dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+            crimeDate.text = dateFormat.format(crime.date)
+
             crimeDate.setOnClickListener {
                 findNavController().navigate(
                     CrimeDetailFragmentDirections.selectDate(crime.date)
@@ -186,7 +190,8 @@ class CrimeDetailFragment : Fragment() {
             getString(R.string.crime_report_unsolved)
         }
 
-        val dateString = DateFormat.format(DATE_FORMAT, crime.date).toString()
+        val dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault())
+        val dateString = dateFormat.format(crime.date)
         val suspectText = if (crime.suspect.isBlank()) {
             getString(R.string.crime_report_no_suspect)
         } else {
